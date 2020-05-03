@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8 />
+    <title>Web Mapping Final: Map 1</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: whitesmoke;
+            font-family: Lato, sans-serif;
+            color: #0D0000;
+        }
+        header {
+            padding: 6px 10%;
+        }
+        h1 {
+            display: inline-block;
+            margin-right: 20px;
+            color: #001323;
+        }
+        h2 {
+            display: inline-block;
+            color: #001323;
+        }
+        #map {
+            width: 80%;
+            height: 540px;
+            margin: 10px auto;
+        }
+        footer {
+            padding: 6px 10%;
+            width: 80%;
+        }
+        p {
+            font-size: 1em;
+            color: #001323;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Map of Confirmed Corona Virus Cases in Pennsylvania</h1>
+        <h2>Cases as of April 29th 2020</h2>
+    </header>
+
+    <div id='map'></div>
+
+    <footer>
+        <p>Map authored by Allyson Conway</p>
+        <p>Click each county to view the popup of cases. If cases are greater than 1000 the county will be dark red, if less than 1000 but greater than 500 county will be orange, if less than 500 county will be yellow.</p>
+    </footer>
+
+    <script src="covid_final.js"></script>
+    <script>
+
+      var map = L.map('map', {
+          center: [41,-77],
+          zoom: 7,
+      });
+      
+      var tiles = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+          subdomains: 'abcd',
+          maxZoom: 19
+      });  
+      
+      tiles.addTo(map);
+      
+      var conLayer = L.geoJson(covid, {
+          pointToLayer: function(feature,latlng) {
+              console.log(feature.properties.paOnly_Con)
+               return L.circleMarker(latlng, {
+                 color: '#8B0000',
+                 weight: 2,
+                 fillColor: '#8B0000',
+                 fillOpacity: .5,
+                
+          });
+          
+      },
+      
+    filter : function(feature, layer){
+        if(feature.properties.paOnly_Con > 1000){
+            return feature
+        };
+    console.log(feature.properties.paOnly_Con);    
+    
+    },
+        onEachFeature : function(feature,layer) {
+    layer.on('click', function() {
+    layer.setStyle({
+        fillColor: '#8B0000'
+    });
+});
+
+
+var name = feature.properties.county_nam
+var confirmed = feature.properties.paOnly_Con
+
+var popup = ("<b>"+ name +"</b><br>"+ confirmed + " confirmed cases" +"<br>" )
+                       layer.bindPopup(popup)
+          }
+          
+          
+      }).addTo(map); 
+        
+var conMidLayer =  L.geoJson(covid, {
+          pointToLayer: function(feature,latlng) {
+              console.log(feature.properties.paOnly_Con)
+               return L.circleMarker(latlng, {
+                 color: '#FF8C00',
+                 weight: 2,
+                 fillColor: '#FF8C00',
+                 fillOpacity: .5,
+                
+          });
+          
+      },
+      
+    filter : function(feature, layer){
+        if(feature.properties.paOnly_Con < 999){
+            return feature 
+        };
+   console.log(feature.properties.paOnly_Con);    
+     
+    },
+    
+ onEachFeature : function(feature,layer) {
+    layer.on('click', function() {
+    layer.setStyle({
+        fillColor: '#FF8C00'
+    });
+    });
+var name = feature.properties.county_nam
+var confirmed = feature.properties.paOnly_Con
+
+var popup = ("<b>"+ name +"</b><br>"+ confirmed + " confirmed cases" +"<br>" )
+                       layer.bindPopup(popup)
+          }
+          
+          
+      }).addTo(map); 
+    
+    
+var conLowLayer =  L.geoJson(covid, {
+          pointToLayer: function(feature,latlng) {
+              console.log(feature.properties.paOnly_Con)
+               return L.circleMarker(latlng, {
+                 color: '#FFFF00',
+                 weight: 2,
+                 fillColor: '#FFFF00',
+                 fillOpacity: .5,
+                
+          });
+          
+      },   
+  filter : function(feature, layer){
+        if(feature.properties.paOnly_Con < 499){
+            return feature 
+        };
+   console.log(feature.properties.paOnly_Con);    
+     
+    },
+    
+ onEachFeature : function(feature,layer) {
+    layer.on('click', function() {
+    layer.setStyle({
+        fillColor: '#FFFF00'
+    });
+    });
+var name = feature.properties.county_nam
+var confirmed = feature.properties.paOnly_Con
+
+var popup = ("<b>"+ name +"</b><br>"+ confirmed + " confirmed cases" +"<br>" )
+                       layer.bindPopup(popup)
+          }
+          
+          
+      }).addTo(map); 
+         
+      
+
+      
+      
+      
+      
+      </script>
+    
+</body>
+
+</html>
